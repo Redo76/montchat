@@ -10,7 +10,10 @@ $password = strip_tags($_POST['mdp']);
 $confirmPassword = strip_tags($_POST['mdpconf']);
 $email = strip_tags($_POST['email']);
 
+// On stocke les variables en session pour pouvoir les réafficher lorsqu'il y a une erreur dans le formulaire
 $_SESSION['signupEmail'] = $email;
+$_SESSION['signupPrenom'] = $prenom;
+$_SESSION['signupNom'] = $nom;
 
 function alreadyUser($db, $email){
     $e_mailBDD = $db -> prepare('SELECT e_mail FROM users');
@@ -24,14 +27,16 @@ function alreadyUser($db, $email){
     return false;
 } 
 
-if ( !isset($prenom) || !isset($nom) || !isset($password ) || !isset($confirmPassword) || $email === '') {
+if ( !isset($prenom) || !isset($nom) || !isset($password ) || !isset($confirmPassword)) {
     $_SESSION['erreur'];
     header('Location: /signup.php');
 }
-
-
-if ($password != $confirmPassword ) {
+else if ($password != $confirmPassword ) {
     $_SESSION['confirmPassword'] = true;
+    header('Location: /signup.php');
+}
+else if ($prenom === '' || $nom === '' || $password === '' || $confirmPassword === '' || $email === '') {
+    $_SESSION['erreurChamp'];
     header('Location: /signup.php');
 }
 else {
@@ -49,11 +54,17 @@ else {
         'nom' => $nom,
         'password' => $password
     ]);
-    echo 'Vous vous êtes inscrit sur ce site !';
+    $_SESSION['signup'] = true;
 }
 ?>
 
 <?php include_once('header.php') ?>
+<?php if (isset($_SESSION['signup'])) : ?>
+        <div class="alert alert-success" role="alert">
+            Vous vous êtes inscrits !
+        </div>
+        <?php unset($_SESSION['signup']); ?>
+        <?php endif ?>
 <!-- <form method="POST" action="signup_POST.php" class="container mt-5">
     <h2>Formulaire d'inscription</h2>
     <div class="mb-3">
