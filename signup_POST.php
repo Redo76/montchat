@@ -15,6 +15,7 @@ $_SESSION['signupEmail'] = $email;
 $_SESSION['signupPrenom'] = $prenom;
 $_SESSION['signupNom'] = $nom;
 
+// Création d'une fonction qui retourn VRAI lorsque l'email que l'on rentre dans le formulaire est le meme que dans la base de donnée
 function alreadyUser($db, $email){
     $e_mailBDD = $db -> prepare('SELECT e_mail FROM users');
     $e_mailBDD -> execute();
@@ -27,18 +28,31 @@ function alreadyUser($db, $email){
     return false;
 } 
 
+
+$regexMdp = preg_match('%^(?=.*?[A-Z])(?=.*?[a-z]).{8,}$%', $password);
+
+
 if ( !isset($prenom) || !isset($nom) || !isset($password ) || !isset($confirmPassword)) {
     $_SESSION['erreur'];
     header('Location: /signup.php');
 }
+
+else if ($regexMdp === 0) {
+    $_SESSION['erreurMdp'] = true;
+    header('Location: /signup.php');
+    var_dump($regexMdp);
+}
+
 else if ($password != $confirmPassword ) {
     $_SESSION['confirmPassword'] = true;
     header('Location: /signup.php');
 }
+
 else if ($prenom === '' || $nom === '' || $password === '' || $confirmPassword === '' || $email === '') {
     $_SESSION['erreurChamp'];
     header('Location: /signup.php');
 }
+
 else {
     if (alreadyUser($db, $email)) {
         echo 'qqchose';
@@ -46,13 +60,16 @@ else {
         header('Location: /signup.php');
         return;
     }
+    
+    $passwordHash = password_hash($password, PASSWORD_DEFAULT);
+
     $sqlInscription = 'INSERT INTO users(e_mail,prenom, nom, password) VALUES (:e_mail, :prenom, :nom, :password)';
     $ajoutUser = $db -> prepare($sqlInscription);
     $ajoutUser -> execute([
         'e_mail' => $email,
         'prenom' => $prenom,
         'nom' => $nom,
-        'password' => $password
+        'password' => $passwordHash
     ]);
     $_SESSION['signup'] = true;
 }
@@ -65,23 +82,3 @@ else {
         </div>
         <?php unset($_SESSION['signup']); ?>
         <?php endif ?>
-<!-- <form method="POST" action="signup_POST.php" class="container mt-5">
-    <h2>Formulaire d'inscription</h2>
-    <div class="mb-3">
-        <label for="mdp" class="form-label">Prénom</label>
-        <input type="text" class="form-control" name="prenom" id="prenom">
-    </div>
-    <div class="mb-3">
-        <label for="mdp" class="form-label">Nom</label>
-        <input type="text" class="form-control" name="nom" id="nom">
-    </div>
-    <div class="mb-3">
-        <label for="mdp" class="form-label">Mot de passe</label>
-        <input type="password" class="form-control" name="mdp" id="mdp">
-    </div>
-    <div class="mb-3">
-        <label for="mdp" class="form-label">Confirmation mot de passe</label>
-        <input type="password" class="form-control" name="mdpconf" id="mdpconf">
-        <span></span>
-    </div>
-    <button type="submit" class="btn btn-primary">S'inscrire</button> -->
