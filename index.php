@@ -2,6 +2,7 @@
 session_start();
 
 include_once('header.php');
+include_once('variables.php');
 
 ?>
 
@@ -21,10 +22,19 @@ include_once('header.php');
   <form action="message_POST.php" method="POST">
     <div>
       <label for="message" class="form-label">Commentaires</label>
-      <input type="email" class="form-control" name="message" id="message" aria-describedby="emailHelp">
+      <input type="text" class="form-control" name="message" id="message" aria-describedby="emailHelp" required>
     </div>
     <button type="submit" class="btn btn-primary">Envoyer</button>
   </form>
 <?php endif ?>
+<div class="container">
+  <?php foreach ($comments as $key => $comment) : ?>
+    <div class=" d-flex justify-content-around">
+      <p><?= $comment['prenom']. ' ' . $comment['nom'] ?></p>
+      <p><?= $comment['comm_date']?></p>
+      <p><?= $comment['comm_contenu']?></p>
+    </div>
+  <?php endforeach ?>
+</div>
 </body>
 </html>

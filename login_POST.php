@@ -32,7 +32,8 @@ else if (password_verify($password, $getUser['password'])) {
     $loggedUser = [
         'email' => $getUser['e_mail'],
         'prenom' => $getUser['prenom'],
-        'nom' => $getUser['nom']
+        'nom' => $getUser['nom'],
+        'user_id' => $getUser['user_id']
     ];
 
     header('Location: /index.php');
