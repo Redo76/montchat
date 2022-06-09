@@ -29,7 +29,7 @@ function alreadyUser($db, $email){
 } 
 
 
-$regexMdp = preg_match('%^(?=.*?[A-Z])(?=.*?[a-z]).{8,}$%', $password);
+$regexMdp = preg_match('%^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,}$%', $password);
 
 
 if ( !isset($prenom) || !isset($nom) || !isset($password ) || !isset($confirmPassword)) {
@@ -71,6 +71,7 @@ else {
         'nom' => $nom,
         'password' => $passwordHash
     ]);
+    
     $_SESSION['signup'] = true;
 }
 ?>

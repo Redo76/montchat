@@ -39,7 +39,8 @@ else if (password_verify($password, $getUser['password'])) {
     header('Location: /index.php');
 
     $_SESSION['loggedUser'] = $loggedUser;
-
-}{
-
+}
+else{
+    $_SESSION['erreurMdp'] = true;
+    header('Location: /login.php');
 }

@@ -16,21 +16,32 @@ include_once('header.php');
   <div class="mb-3">
     <label for="email" class="form-label">Adresse e-mail</label>
     <input type="email" class="form-control" name="email" id="email" aria-describedby="emailHelp">
-    <?php if (isset($_SESSION['erreur'])) : ?>
+
+    <?php if (isset($_SESSION['erreurEmail'])) : ?>
         <div class="alert alert-danger" role="alert">
-                E-mail Incorrecte !
+          E-mail Incorrecte !
         </div>
-        <?php unset($_SESSION['erreur']); ?>
+        <?php unset($_SESSION['erreurEmail']); ?>
     <?php endif ?>
+
   </div>
   <div class="mb-3">
     <label for="mdp" class="form-label">Mot de passe</label>
     <input type="password" class="form-control" name="mdp" id="mdp">
   </div>
+
+  <?php if (isset($_SESSION['erreurEmail'])) : ?>
+      <div class="alert alert-danger" role="alert">
+        E-mail Incorrecte !
+      </div>
+      <?php unset($_SESSION['erreurEmail']); ?>
+  <?php endif ?>
+
   <button type="submit" class="btn btn-primary">Se connecter</button>
   <section>
     <?php  ?>
   </section>
 </form>
+</main>
 </body>
 </html>
